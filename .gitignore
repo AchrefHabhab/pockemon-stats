@@ -39,3 +39,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code Education - DO NOT COMMIT
+CLAUDE.md
+AGENTS.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+*.egg-info/
+
+# Data files
+python-data/*.csv
+python-data/*.json
+!python-data/.gitkeep
