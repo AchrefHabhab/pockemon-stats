@@ -6,12 +6,14 @@ export interface Summary {
 }
 
 export interface Character {
+  "#": number;
   Name: string;
   Attack: number;
   Defense: number;
   HP: number;
   Speed: number;
   "Type 1": string;
+  "Type 2"?: string;
 }
 
 export interface TypeDistribution {
@@ -43,6 +45,7 @@ export interface GenerationTrends {
 
 export interface AnalysisData {
   summary: Summary;
+  all_pokemon: Character[];
   top_attackers: Character[];
   top_defenders: Character[];
   fastest: Character[];

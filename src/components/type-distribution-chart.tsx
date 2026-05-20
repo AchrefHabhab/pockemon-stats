@@ -16,9 +16,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 interface TypeDistributionChartProps {
   data: TypeDistribution;
+  onTypeClick?: (type: string) => void;
 }
 
-export function TypeDistributionChart({ data }: TypeDistributionChartProps) {
+export function TypeDistributionChart({ data, onTypeClick }: TypeDistributionChartProps) {
   const chartData = {
     labels: data.labels,
     datasets: [
@@ -35,6 +36,13 @@ export function TypeDistributionChart({ data }: TypeDistributionChartProps) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: (_event: unknown, elements: { index: number }[]) => {
+      if (elements.length > 0 && onTypeClick) {
+        const index = elements[0].index;
+        const type = data.labels[index];
+        onTypeClick(type);
+      }
+    },
     plugins: {
       legend: {
         display: false,

@@ -11,7 +11,7 @@ def load_data():
 
 def analyze_top_performers(df, stat_column="Attack", top_n=10):
     top_performers = df.nlargest(top_n, stat_column)[
-        ["Name", stat_column, "Type 1", "HP", "Defense", "Speed"]
+        ["#", "Name", stat_column, "Type 1", "Type 2", "HP", "Defense", "Speed"]
     ]
     return top_performers.to_dict("records")
 
@@ -67,8 +67,20 @@ def analyze_generation_trends(df):
 def export_analysis_results(results, output_filename="analysis_results.json"):
     output_path = os.path.join(os.path.dirname(__file__), "..", "python-data", output_filename)
 
+    def clean_data(obj):
+        if isinstance(obj, dict):
+            return {k: clean_data(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [clean_data(item) for item in obj]
+        elif pd.isna(obj):
+            return None
+        else:
+            return obj
+
+    cleaned_results = clean_data(results)
+
     with open(output_path, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(cleaned_results, f, indent=2)
 
     print(f"✅ Analysis results exported to: {output_path}")
     return output_path
@@ -85,6 +97,10 @@ def main():
 
     print("\n🔍 Analyzing data...")
 
+    all_pokemon_data = df[
+        ["#", "Name", "Type 1", "Type 2", "HP", "Attack", "Defense", "Speed"]
+    ].to_dict("records")
+
     results = {
         "summary": {
             "total_characters": int(len(df)),
@@ -92,6 +108,7 @@ def main():
             "total_generations": int(df["Generation"].nunique()),
             "legendary_count": int(df["Legendary"].sum()),
         },
+        "all_pokemon": all_pokemon_data,
         "top_attackers": analyze_top_performers(df, "Attack", 10),
         "top_defenders": analyze_top_performers(df, "Defense", 10),
         "fastest": analyze_top_performers(df, "Speed", 10),
